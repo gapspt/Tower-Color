@@ -7,9 +7,12 @@ public class Tower : MonoBehaviour
 
     public int levels = 20;
     public int blocksPerLevel = 15;
+    public Color[] blockColors;
 
     private void Start()
     {
+        int blockColorsLength = blockColors.Length;
+
         float blockPlacementRadius = CalcBlockPlacementRadius(blocksPerLevel);
         float angleDiff = 360 / blocksPerLevel;
         Vector3 firstBlockPosition = new Vector3(0, 0, blockPlacementRadius);
@@ -23,8 +26,10 @@ public class Tower : MonoBehaviour
             {
                 Vector3 position = level % 2 == 0 ? evenLevelPosition : oddLevelPosition;
                 position.y += level;
-                GameObject newBlock = Instantiate(blockPrefab, transform);
-                newBlock.transform.localPosition = position;
+                GameObject newBlockObject = Instantiate(blockPrefab, transform);
+                newBlockObject.transform.localPosition = position;
+                Block newBlock = newBlockObject.GetComponent<Block>();
+                newBlock.SetColor(blockColors[Random.Range(0, blockColorsLength)]);
             }
         }
 
