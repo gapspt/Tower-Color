@@ -592,7 +592,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraController: {fileID: 2095581502}
+  ballPrefab: {fileID: 3808309080595534184, guid: a04024a391a03ef4da89a96718bdfe3d,
+    type: 3}
   cameraRotationSpeed: 180
+  throwSpeed: 35
 --- !u!114 &1606017777
 MonoBehaviour:
   m_ObjectHideFlags: 0
