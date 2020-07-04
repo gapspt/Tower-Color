@@ -24,6 +24,10 @@ public class InputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
             cameraController.SetRotationAngle(cameraAngle);
             dragging = false;
         }
+        else
+        {
+            CheckClickOnBlock(eventData);
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -35,5 +39,14 @@ public class InputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     public float CalcCameraDeltaAngle(PointerEventData eventData)
     {
         return (eventData.position.x - eventData.pressPosition.x) / Screen.width * cameraRotationSpeed;
+    }
+
+    public void CheckClickOnBlock(PointerEventData eventData)
+    {
+        Ray ray = cameraController.gameCamera.ScreenPointToRay(eventData.position);
+        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        {
+            hitInfo.transform.GetComponentInParent<Block>()?.Explode();
+        }
     }
 }

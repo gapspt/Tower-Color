@@ -11,11 +11,6 @@ public class Block : MonoBehaviour
 
     public bool IsExploding { get; private set; } = false;
 
-    private void OnMouseUpAsButton()
-    {
-        Explode();
-    }
-
     public void SetColor(int colorNumber, Color color)
     {
         ColorNumber = colorNumber;
