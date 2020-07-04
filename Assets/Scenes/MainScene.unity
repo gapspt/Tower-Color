@@ -596,6 +596,7 @@ MonoBehaviour:
     type: 3}
   cameraRotationSpeed: 180
   throwSpeed: 35
+  throwGravityMultiplier: 2
   throwCameraPositionOffset: {x: 0, y: -2, z: 5}
 --- !u!114 &1606017777
 MonoBehaviour:

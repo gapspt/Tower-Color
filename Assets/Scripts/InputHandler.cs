@@ -11,6 +11,7 @@ public class InputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     public float cameraRotationSpeed = 180;
 
     public float throwSpeed = 35;
+    public float throwGravityMultiplier = 2;
     public Vector3 throwCameraPositionOffset;
 
     private bool dragging = false;
@@ -61,7 +62,7 @@ public class InputHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     private async void ThrowBall(Block block, Vector3 hitPosition)
     {
-        float gravity = Physics.gravity.y;
+        float gravity = Physics.gravity.y * throwGravityMultiplier;
 
         Vector3 initialBallPosition = cameraController.gameCamera.transform.TransformPoint(throwCameraPositionOffset);
         GameObject ball = Instantiate(ballPrefab, initialBallPosition, Quaternion.identity);
