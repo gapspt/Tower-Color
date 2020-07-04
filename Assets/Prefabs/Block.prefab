@@ -62,6 +62,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorRenderer: {fileID: 7293969916373275999}
+  explosionRadius: 1
+  explosionForce: 500
 --- !u!1 &7914081907139960450
 GameObject:
   m_ObjectHideFlags: 0

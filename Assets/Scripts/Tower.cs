@@ -29,7 +29,8 @@ public class Tower : MonoBehaviour
                 GameObject newBlockObject = Instantiate(blockPrefab, transform);
                 newBlockObject.transform.localPosition = position;
                 Block newBlock = newBlockObject.GetComponent<Block>();
-                newBlock.SetColor(blockColors[Random.Range(0, blockColorsLength)]);
+                int colorIndex = Random.Range(0, blockColorsLength);
+                newBlock.SetColor(colorIndex, blockColors[colorIndex]);
             }
         }
 
