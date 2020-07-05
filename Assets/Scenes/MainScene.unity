@@ -390,6 +390,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level
       objectReference: {fileID: 0}
+    - target: {fileID: 3785336831310983159, guid: 186f0f02b80d0474b8975a2f6842a1c6,
+        type: 3}
+      propertyPath: cameraController
+      value: 
+      objectReference: {fileID: 2095581502}
     - target: {fileID: 6477862236116642318, guid: 186f0f02b80d0474b8975a2f6842a1c6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -497,13 +502,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2110b1a8d06c3749a426224419fdafc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraController: {fileID: 2095581502}
-  ballPrefab: {fileID: 3808309080595534184, guid: a04024a391a03ef4da89a96718bdfe3d,
-    type: 3}
-  cameraRotationSpeed: 180
-  throwSpeed: 35
-  throwGravityMultiplier: 2
-  throwCameraPositionOffset: {x: 0, y: -2, z: 5}
 --- !u!114 &1606017777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,3 +639,5 @@ MonoBehaviour:
   lookAtPosition: {x: 0, y: 11.5, z: 0}
   distanceOffset: 20
   heightOffset: 7.5
+  rotationAngle: 0
+  rotationSpeed: 180

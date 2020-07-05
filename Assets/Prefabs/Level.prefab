@@ -139,5 +139,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings: {fileID: 0}
+  cameraController: {fileID: 0}
   towerPrefab: {fileID: 9195721812085977840, guid: 0d1fa700478d7fd40879adea6e4037dc,
     type: 3}
+  ballPrefab: {fileID: 3808309080595534184, guid: a04024a391a03ef4da89a96718bdfe3d,
+    type: 3}
+  throwSpeed: 35
+  throwGravityMultiplier: 2
+  throwCameraPositionOffset: {x: 0, y: -2, z: 0}
