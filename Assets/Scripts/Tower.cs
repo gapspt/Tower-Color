@@ -15,7 +15,7 @@ public class Tower : MonoBehaviour
 
         float blockPlacementRadius = CalcBlockPlacementRadius(blocksPerLevel);
         float angleDiff = 360 / blocksPerLevel;
-        Vector3 firstBlockPosition = new Vector3(0, 0, blockPlacementRadius);
+        Vector3 firstBlockPosition = new Vector3(0, blocksBase.localPosition.y, blockPlacementRadius);
 
         for (int blockLevelIndex = 0; blockLevelIndex < blocksPerLevel; blockLevelIndex++)
         {
@@ -34,8 +34,7 @@ public class Tower : MonoBehaviour
             }
         }
 
-        float baseScale = (blockPlacementRadius + 1) * 2;
-        blocksBase.localScale = new Vector3(baseScale, blocksBase.localScale.y, baseScale);
+        blocksBase.localScale *= (blockPlacementRadius + 1) * 2;
     }
 
     private float CalcBlockPlacementRadius(int blocks)
