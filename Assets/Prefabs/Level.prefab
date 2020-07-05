@@ -146,4 +146,4 @@ MonoBehaviour:
     type: 3}
   throwSpeed: 35
   throwGravityMultiplier: 2
-  throwCameraPositionOffset: {x: 0, y: -2, z: 0}
+  throwCameraPositionOffset: {x: 0, y: -2, z: 5}

@@ -13,6 +13,11 @@ public class Level : MonoBehaviour
     public float throwGravityMultiplier = 2;
     public Vector3 throwCameraPositionOffset;
 
+    private int[] blockColorIds;
+    private Tower tower;
+
+    private Ball currentBall;
+
     public static Level Current { get; private set; }
 
     private void Awake()
@@ -28,10 +33,9 @@ public class Level : MonoBehaviour
             cameraController = FindObjectOfType<CameraController>();
         }
 
-        Tower tower = Instantiate(towerPrefab, transform).GetComponentInChildren<Tower>();
-        tower.levels = settings.towerLevels;
-        tower.blocksPerLevel = settings.blocksPerTowerLevel;
-        tower.blockColorIds = ChooseRandomBlockColorIds(settings.blockColorsNumber);
+        SetupLevel();
+
+        StartLevel();
     }
 
     public void OnClick(Vector2 point)
@@ -52,11 +56,31 @@ public class Level : MonoBehaviour
         cameraController.RotateByRelativeAmount(delta.x / Screen.width);
     }
 
-    private int[] ChooseRandomBlockColorIds(int blockColorsNumber)
+    private void SetupLevel()
+    {
+        if (tower != null)
+        {
+            Destroy(tower);
+        }
+
+        ChooseRandomBlockColors(settings.blockColorsNumber);
+
+        tower = Instantiate(towerPrefab, transform).GetComponentInChildren<Tower>();
+        tower.levels = settings.towerLevels;
+        tower.blocksPerLevel = settings.blocksPerTowerLevel;
+        tower.blockColorIds = blockColorIds;
+    }
+
+    private void StartLevel()
+    {
+        SetupBall();
+    }
+
+    private void ChooseRandomBlockColors(int blockColorsNumber)
     {
         if (blockColorsNumber <= 0)
         {
-            return null;
+            return;
         }
 
         int availableColorsLength = LevelSettings.BlockColors.Length;
@@ -66,23 +90,32 @@ public class Level : MonoBehaviour
             availableNumbers[i] = i;
         }
 
-        int[] result = new int[blockColorsNumber];
+        blockColorIds = new int[blockColorsNumber];
         for (int i = 0; i < blockColorsNumber; i++)
         {
             int j = Random.Range(i, availableColorsLength);
-            result[i] = availableNumbers[j];
+            blockColorIds[i] = availableNumbers[j];
             availableNumbers[j] = availableNumbers[i];
         }
-        return result;
+    }
+
+    private void SetupBall()
+    {
+        GameObject ballObject = Instantiate(ballPrefab, cameraController.gameCamera.transform);
+        ballObject.transform.localPosition = throwCameraPositionOffset;
+        currentBall = ballObject.GetComponentInChildren<Ball>();
+        currentBall.Setup(blockColorIds[Random.Range(0, blockColorIds.Length)]);
     }
 
     private async void ThrowBall(Block block, Vector3 hitPosition)
     {
+        Ball ball = currentBall;
+
+        SetupBall();
+
         float gravity = Physics.gravity.y * throwGravityMultiplier;
 
-        Vector3 initialBallPosition = cameraController.gameCamera.transform.TransformPoint(throwCameraPositionOffset);
-        GameObject ball = Instantiate(ballPrefab, initialBallPosition, Quaternion.identity);
-
+        Vector3 initialBallPosition = ball.transform.position;
         Vector3 distance = hitPosition - initialBallPosition;
         Vector2 horizontalDistance = new Vector2(distance.x, distance.z);
         float totalTime = horizontalDistance.magnitude / throwSpeed;
@@ -104,7 +137,10 @@ public class Level : MonoBehaviour
             await TaskUtils.WaitForNextUpdate(this);
         }
 
-        Destroy(ball);
-        block.Explode();
+        if (block.ColorId == ball.ColorId)
+        {
+            block.Explode();
+        }
+        Destroy(ball.gameObject);
     }
 }
