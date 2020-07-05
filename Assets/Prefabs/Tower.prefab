@@ -143,8 +143,4 @@ MonoBehaviour:
   blocksBase: {fileID: 2591174416248583567}
   levels: 20
   blocksPerLevel: 15
-  blockColors:
-  - {r: 0, g: 0.5, b: 0.75, a: 0}
-  - {r: 0.75, g: 0.5, b: 0, a: 0}
-  - {r: 0.25, g: 0.75, b: 0, a: 0}
-  - {r: 0.75, g: 0.125, b: 0, a: 0}
+  blockColorIds: 00000000010000000200000003000000

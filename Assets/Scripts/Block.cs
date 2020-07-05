@@ -7,14 +7,14 @@ public class Block : MonoBehaviour
     public float explosionRadius = 1;
     public float explosionForce = 500;
 
-    public int ColorNumber { get; private set; }
+    public int ColorId { get; private set; }
 
     public bool IsExploding { get; private set; } = false;
 
-    public void SetColor(int colorNumber, Color color)
+    public void SetColor(int colorId)
     {
-        ColorNumber = colorNumber;
-        colorRenderer.material.color = color;
+        ColorId = colorId;
+        colorRenderer.material.color = LevelSettings.BlockColors[colorId];
     }
 
     public void Explode()
@@ -33,7 +33,7 @@ public class Block : MonoBehaviour
             Block otherBlock = collider.GetComponentInParent<Block>();
             if (otherBlock != null && !otherBlock.IsExploding)
             {
-                if (otherBlock.ColorNumber == ColorNumber)
+                if (otherBlock.ColorId == ColorId)
                 {
                     otherBlock.Explode();
                 }
