@@ -17,6 +17,7 @@ public class Level : MonoBehaviour
     private Tower tower;
 
     private Ball currentBall;
+    private int availableBalls;
 
     public static Level Current { get; private set; }
 
@@ -40,6 +41,11 @@ public class Level : MonoBehaviour
 
     public void OnClick(Vector2 point)
     {
+        if (currentBall == null)
+        {
+            return;
+        }
+
         Ray ray = cameraController.gameCamera.ScreenPointToRay(point);
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
@@ -69,6 +75,8 @@ public class Level : MonoBehaviour
         tower.levels = settings.towerLevels;
         tower.blocksPerLevel = settings.blocksPerTowerLevel;
         tower.blockColorIds = blockColorIds;
+
+        availableBalls = settings.availableBalls;
     }
 
     private void StartLevel()
@@ -111,7 +119,15 @@ public class Level : MonoBehaviour
     {
         Ball ball = currentBall;
 
-        SetupBall();
+        availableBalls--;
+        if (availableBalls > 0)
+        {
+            SetupBall();
+        }
+        else
+        {
+            currentBall = null;
+        }
 
         float gravity = Physics.gravity.y * throwGravityMultiplier;
 
