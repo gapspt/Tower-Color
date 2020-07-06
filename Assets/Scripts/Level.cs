@@ -40,8 +40,19 @@ public class Level : MonoBehaviour
 
         SetupLevel();
 
+        int levels = settings.towerLevels;
+        int unlockedLevels = settings.towerUnlockedLevels;
+
+        Vector3 lookAtPosition = (tower.GetLevelLocalPosition(0) +
+            tower.GetLevelLocalPosition(unlockedLevels)) / 2;
+        cameraController.SetLookAtPosition(lookAtPosition);
+
         // TODO: Start an animation and wait for it to end
         await TaskUtils.WaitForSecondsRealtime(this, 1);
+        lookAtPosition = (tower.GetLevelLocalPosition(levels) +
+            tower.GetLevelLocalPosition(levels - unlockedLevels)) / 2;
+        cameraController.SetLookAtPosition(lookAtPosition);
+
         StartLevel();
     }
 
@@ -74,6 +85,9 @@ public class Level : MonoBehaviour
         if (lockedLevels > 0 && levelStandingBlocks == 0)
         {
             tower.SetLevelLocked(--lockedLevels, false);
+            Vector3 lookAtPosition = (tower.GetLevelLocalPosition(lockedLevels) +
+                         tower.GetLevelLocalPosition(lockedLevels + settings.towerUnlockedLevels)) / 2;
+            cameraController.MoveToLevelAtPosition(lookAtPosition);
         }
     }
 

@@ -636,8 +636,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameCamera: {fileID: 2095581500}
-  lookAtPosition: {x: 0, y: 11.5, z: 0}
-  distanceOffset: 20
-  heightOffset: 7.5
+  lookAtPosition: {x: 0, y: 0, z: 0}
+  distanceOffset: 16
+  heightOffset: 2
   rotationAngle: 0
   rotationSpeed: 180
+  nextTowerLevelSpeed: 5

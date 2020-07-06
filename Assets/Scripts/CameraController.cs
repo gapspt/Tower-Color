@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -6,26 +7,44 @@ public class CameraController : MonoBehaviour
 
     public Vector3 lookAtPosition;
     public float distanceOffset = 20;
-    public float heightOffset = 8;
+    public float heightOffset = 0;
     public float rotationAngle = 0;
     [Tooltip("Corresponds to the angle in degrees that the camera will rotate upon a drag from one edge of the screen to the other.")]
     public float rotationSpeed = 180;
+    [Tooltip("Corresponds to the speed when moving to another tower level position.")]
+    public float nextTowerLevelSpeed = 5;
 
     private void Start()
     {
-        SetRotationAngle(rotationAngle);
+        UpdateTransform();
     }
 
-    public void SetRotationAngle(float angle)
+    public void SetLookAtPosition(Vector3 lookAtPosition)
     {
-        rotationAngle = angle;
-        transform.position = lookAtPosition +
-            (Quaternion.Euler(0, angle, 0) * new Vector3(0, heightOffset, -distanceOffset));
-        transform.LookAt(lookAtPosition);
+        this.lookAtPosition = lookAtPosition;
+        UpdateTransform();
     }
 
     public void RotateByRelativeAmount(float relativeAmount)
     {
-        SetRotationAngle((rotationAngle + relativeAmount * rotationSpeed) % 360);
+        rotationAngle = (rotationAngle + relativeAmount * rotationSpeed) % 360;
+        UpdateTransform();
+    }
+
+    public async void MoveToLevelAtPosition(Vector3 lookAtPosition)
+    {
+        // TODO: Start an animation and wait for it to end
+        float duration = Mathf.Abs(this.lookAtPosition.y - lookAtPosition.y) / nextTowerLevelSpeed;
+        await TaskUtils.WaitForSecondsRealtime(this, duration);
+
+        this.lookAtPosition = lookAtPosition;
+        UpdateTransform();
+    }
+
+    private void UpdateTransform()
+    {
+        transform.position = lookAtPosition +
+            (Quaternion.Euler(0, rotationAngle, 0) * new Vector3(0, heightOffset, -distanceOffset));
+        transform.LookAt(lookAtPosition);
     }
 }

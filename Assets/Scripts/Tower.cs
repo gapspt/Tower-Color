@@ -41,7 +41,7 @@ public class Tower : MonoBehaviour
                     blocks[level] = new Block[blocksPerLevel];
 
                     GameObject levelColliderObject = Instantiate(towerLevelColliderPrefab, transform);
-                    levelColliderObject.transform.localPosition = new Vector3(0, position.y, 0);
+                    levelColliderObject.transform.localPosition = GetLevelLocalPosition(level);
                     levelColliderObject.GetComponentInChildren<TowerLevelCollider>()
                         .Setup(level, blockPlacementRadius);
                 }
@@ -51,6 +51,11 @@ public class Tower : MonoBehaviour
         }
 
         blocksBase.localScale *= (blockPlacementRadius + 1) * 2;
+    }
+
+    public Vector3 GetLevelLocalPosition(int level)
+    {
+        return new Vector3(0, blocksBase.localPosition.y + level, 0);
     }
 
     public void SetLevelLocked(int level, bool value)
