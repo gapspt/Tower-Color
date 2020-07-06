@@ -2,6 +2,8 @@
 
 public class LevelSettings : ScriptableObject
 {
+    public const int TowerBlocksLayer = 8;
+
     public const int DefaultTowerLevels = 20;
     public const int DefaultTowerUnlockedLevels = 8;
     public const int DefaultBlocksPerTowerLevel = 15;

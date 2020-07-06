@@ -3,6 +3,7 @@
 public class Tower : MonoBehaviour
 {
     public GameObject blockPrefab;
+    public GameObject towerLevelColliderPrefab;
     public Transform blocksBase;
 
     public int levels = 20;
@@ -33,12 +34,18 @@ public class Tower : MonoBehaviour
                 newBlockObject.transform.localPosition = position;
                 Block newBlock = newBlockObject.GetComponent<Block>();
                 int colorId = blockColorIds[Random.Range(0, blockColorsLength)];
-                newBlock.Setup(colorId);
+                newBlock.Setup(colorId, level);
 
                 if (blockLevelIndex == 0)
                 {
                     blocks[level] = new Block[blocksPerLevel];
+
+                    GameObject levelColliderObject = Instantiate(towerLevelColliderPrefab, transform);
+                    levelColliderObject.transform.localPosition = new Vector3(0, position.y, 0);
+                    levelColliderObject.GetComponentInChildren<TowerLevelCollider>()
+                        .Setup(level, blockPlacementRadius);
                 }
+
                 blocks[level][blockLevelIndex] = newBlock;
             }
         }

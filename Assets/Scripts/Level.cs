@@ -15,15 +15,19 @@ public class Level : MonoBehaviour
 
     private int[] blockColorIds;
     private Tower tower;
+    private int towerBlocksLayerMask;
 
     private Ball currentBall;
     private int availableBalls;
+    private int lockedLevels;
+    private int[] standingBlocksPerLevel;
 
     public static Level Current { get; private set; }
 
     private void Awake()
     {
         settings = settings ?? LevelSettings.CreateDefaultInstance();
+        towerBlocksLayerMask = LayerMask.GetMask(LayerMask.LayerToName(LevelSettings.TowerBlocksLayer));
         Current = this;
     }
 
@@ -49,7 +53,7 @@ public class Level : MonoBehaviour
         }
 
         Ray ray = cameraController.gameCamera.ScreenPointToRay(point);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, towerBlocksLayerMask))
         {
             Block block = hitInfo.transform.GetComponentInParent<Block>();
             if (block != null && !block.IsLocked && !block.IsExploding)
@@ -64,6 +68,15 @@ public class Level : MonoBehaviour
         cameraController.RotateByRelativeAmount(delta.x / Screen.width);
     }
 
+    public void OnBlockFell(Block block)
+    {
+        int levelStandingBlocks = --standingBlocksPerLevel[block.TowerLevel];
+        if (lockedLevels > 0 && levelStandingBlocks == 0)
+        {
+            tower.SetLevelLocked(--lockedLevels, false);
+        }
+    }
+
     private void SetupLevel()
     {
         if (tower != null)
@@ -71,19 +84,28 @@ public class Level : MonoBehaviour
             Destroy(tower);
         }
 
+        int towerLevels = settings.towerLevels;
+        int blocksPerTowerLevel = settings.blocksPerTowerLevel;
+
         ChooseRandomBlockColors(settings.blockColorsNumber);
 
         tower = Instantiate(towerPrefab, transform).GetComponentInChildren<Tower>();
-        tower.levels = settings.towerLevels;
-        tower.blocksPerLevel = settings.blocksPerTowerLevel;
+        tower.levels = towerLevels;
+        tower.blocksPerLevel = blocksPerTowerLevel;
         tower.blockColorIds = blockColorIds;
 
         availableBalls = settings.availableBalls;
+        standingBlocksPerLevel = new int[towerLevels];
+        for (int i = towerLevels - 1; i >= 0; i--)
+        {
+            standingBlocksPerLevel[i] = blocksPerTowerLevel;
+        }
     }
 
     private void StartLevel()
     {
-        for (int i = settings.towerLevels - settings.towerUnlockedLevels - 1; i >= 0; i--)
+        lockedLevels = settings.towerLevels - settings.towerUnlockedLevels;
+        for (int i = lockedLevels - 1; i >= 0; i--)
         {
             tower.SetLevelLocked(i, true);
         }

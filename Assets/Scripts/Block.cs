@@ -9,7 +9,10 @@ public class Block : MonoBehaviour
 
     private Rigidbody rb;
 
+    private bool standing = true;
+
     public int ColorId { get; private set; }
+    public int TowerLevel { get; private set; }
 
     public bool IsLocked { get; private set; } = false;
     public bool IsExploding { get; private set; } = false;
@@ -19,9 +22,24 @@ public class Block : MonoBehaviour
         rb = GetComponentInChildren<Rigidbody>();
     }
 
-    public void Setup(int colorId)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (IsLocked || IsExploding)
+        {
+            return;
+        }
+
+        if (other.GetComponentInParent<TowerLevelCollider>()?.TowerLevel < TowerLevel)
+        {
+            NotifyFallFromLevel();
+        }
+    }
+
+    public void Setup(int colorId, int towerLevel)
     {
         ColorId = colorId;
+        TowerLevel = towerLevel;
+
         colorRenderer.material.color = LevelSettings.BlockColors[colorId];
     }
 
@@ -63,6 +81,16 @@ public class Block : MonoBehaviour
             }
         }
 
+        NotifyFallFromLevel();
         Destroy(gameObject);
+    }
+
+    private void NotifyFallFromLevel()
+    {
+        if (standing)
+        {
+            standing = false;
+            Level.Current?.OnBlockFell(this);
+        }
     }
 }

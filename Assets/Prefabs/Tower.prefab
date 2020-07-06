@@ -171,6 +171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 5696285348123395343, guid: a43b7602da16f7e4eae2d4002ba03da4,
     type: 3}
+  towerLevelColliderPrefab: {fileID: 7652881132325793370, guid: 1c72521799305a14e936636eaa30e96c,
+    type: 3}
   blocksBase: {fileID: 6125331377885300524}
   levels: 20
   blocksPerLevel: 15
