@@ -27,7 +27,7 @@ public class Level : MonoBehaviour
         Current = this;
     }
 
-    private void Start()
+    private async void Start()
     {
         if (cameraController == null)
         {
@@ -36,6 +36,8 @@ public class Level : MonoBehaviour
 
         SetupLevel();
 
+        // TODO: Start an animation and wait for it to end
+        await TaskUtils.WaitForSecondsRealtime(this, 1);
         StartLevel();
     }
 
@@ -50,7 +52,7 @@ public class Level : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
             Block block = hitInfo.transform.GetComponentInParent<Block>();
-            if (block != null)
+            if (block != null && !block.IsLocked && !block.IsExploding)
             {
                 ThrowBall(block, hitInfo.point);
             }
@@ -81,6 +83,11 @@ public class Level : MonoBehaviour
 
     private void StartLevel()
     {
+        for (int i = settings.towerLevels - settings.towerUnlockedLevels - 1; i >= 0; i--)
+        {
+            tower.SetLevelLocked(i, true);
+        }
+
         SetupBall();
     }
 

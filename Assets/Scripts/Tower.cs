@@ -9,6 +9,8 @@ public class Tower : MonoBehaviour
     public int blocksPerLevel = 15;
     public int[] blockColorIds;
 
+    private Block[][] blocks;
+
     private void Start()
     {
         int blockColorsLength = blockColorIds.Length;
@@ -17,6 +19,7 @@ public class Tower : MonoBehaviour
         float angleDiff = 360 / blocksPerLevel;
         Vector3 firstBlockPosition = new Vector3(0, blocksBase.localPosition.y, blockPlacementRadius);
 
+        blocks = new Block[levels][];
         for (int blockLevelIndex = 0; blockLevelIndex < blocksPerLevel; blockLevelIndex++)
         {
             Vector3 evenLevelPosition = Quaternion.Euler(0, blockLevelIndex * angleDiff, 0) * firstBlockPosition;
@@ -30,11 +33,26 @@ public class Tower : MonoBehaviour
                 newBlockObject.transform.localPosition = position;
                 Block newBlock = newBlockObject.GetComponent<Block>();
                 int colorId = blockColorIds[Random.Range(0, blockColorsLength)];
-                newBlock.SetColor(colorId);
+                newBlock.Setup(colorId);
+
+                if (blockLevelIndex == 0)
+                {
+                    blocks[level] = new Block[blocksPerLevel];
+                }
+                blocks[level][blockLevelIndex] = newBlock;
             }
         }
 
         blocksBase.localScale *= (blockPlacementRadius + 1) * 2;
+    }
+
+    public void SetLevelLocked(int level, bool value)
+    {
+        Block[] levelBlocks = blocks[level];
+        for (int i = 0; i < blocksPerLevel; i++)
+        {
+            levelBlocks[i].SetLocked(value);
+        }
     }
 
     private float CalcBlockPlacementRadius(int blocks)
