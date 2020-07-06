@@ -47,11 +47,11 @@ public class Level : MonoBehaviour
             tower.GetLevelLocalPosition(unlockedLevels)) / 2;
         cameraController.SetLookAtPosition(lookAtPosition);
 
-        // TODO: Start an animation and wait for it to end
+        // TODO: Wait for the player to press the start button
         await TaskUtils.WaitForSecondsRealtime(this, 1);
         lookAtPosition = (tower.GetLevelLocalPosition(levels) +
             tower.GetLevelLocalPosition(levels - unlockedLevels)) / 2;
-        cameraController.SetLookAtPosition(lookAtPosition);
+        await cameraController.MoveAtLevelStart(lookAtPosition);
 
         StartLevel();
     }

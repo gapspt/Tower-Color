@@ -17,6 +17,12 @@ public class CameraController : MonoBehaviour
     public AnimationCurve nextTowerLevelMovementCurve = new AnimationCurve(
         new Keyframe(0, 0, 0, 1 / DefaultNextTowerLevelMovementDuration),
         new Keyframe(DefaultNextTowerLevelMovementDuration, 1, 0, 0));
+    [Tooltip("Corresponds to the movement curve when starting the game (the duration is multiplied by the number of tower levels).")]
+    public AnimationCurve startMovementCurve = AnimationCurve
+        .EaseInOut(0, 0, DefaultNextTowerLevelMovementDuration, 1);
+    [Tooltip("Corresponds to the angle in degrees that the camera will rotate when starting the game (per tower level).")]
+    public float startRotationSpeed = 30;
+
 
     private void Start()
     {
@@ -35,13 +41,26 @@ public class CameraController : MonoBehaviour
         UpdateTransform();
     }
 
-    public async void MoveToLevelAtPosition(Vector3 newLookAtPosition)
+    public Task MoveToLevelAtPosition(Vector3 newLookAtPosition)
     {
         Vector3 deltaLookAtPosition = newLookAtPosition - lookAtPosition;
-        Vector3 startLookAtPosition = lookAtPosition;
+        return AnimateLookAtAndRotation(deltaLookAtPosition, 0, nextTowerLevelMovementCurve);
+    }
 
-        float curveDuration = nextTowerLevelMovementCurve.length > 0
-            ? nextTowerLevelMovementCurve.keys[nextTowerLevelMovementCurve.length - 1].time
+    public Task MoveAtLevelStart(Vector3 newLookAtPosition)
+    {
+        Vector3 deltaLookAtPosition = newLookAtPosition - lookAtPosition;
+        float deltaRotation = startRotationSpeed * Mathf.Abs(deltaLookAtPosition.y);
+        return AnimateLookAtAndRotation(deltaLookAtPosition, deltaRotation, startMovementCurve);
+    }
+
+    private async Task AnimateLookAtAndRotation(Vector3 deltaLookAtPosition, float deltaRotation, AnimationCurve curve)
+    {
+        Vector3 startLookAtPosition = lookAtPosition;
+        float startRotationAngle = rotationAngle;
+
+        float curveDuration = curve.length > 0
+            ? curve.keys[curve.length - 1].time
             : 0;
         if (curveDuration > 0)
         {
@@ -60,13 +79,21 @@ public class CameraController : MonoBehaviour
                 }
 
                 float deltaTime = (currentTime - startTime) * invDurationMultiplier;
-                float value = nextTowerLevelMovementCurve.Evaluate(deltaTime);
+                float value = curve.Evaluate(deltaTime);
                 lookAtPosition = startLookAtPosition + deltaLookAtPosition * value;
+                if (deltaRotation != 0)
+                {
+                    rotationAngle = (startRotationAngle + value * deltaRotation) % 360;
+                }
                 UpdateTransform();
             }
         }
 
         lookAtPosition = startLookAtPosition + deltaLookAtPosition;
+        if (deltaRotation != 0)
+        {
+            rotationAngle = (startRotationAngle + deltaRotation) % 360;
+        }
         UpdateTransform();
     }
 
