@@ -2,6 +2,9 @@
 
 public class Block : MonoBehaviour
 {
+    private static Material[] cachedColorMaterials = new Material[LevelSettings.BlockColors.Length];
+    private static Material cachedLockedMaterial;
+
     public Renderer colorRenderer;
 
     public float explosionRadius = 1;
@@ -40,7 +43,7 @@ public class Block : MonoBehaviour
         ColorId = colorId;
         TowerLevel = towerLevel;
 
-        colorRenderer.material.color = LevelSettings.BlockColors[colorId];
+        UpdateColor();
     }
 
     public void SetLocked(bool value)
@@ -48,9 +51,9 @@ public class Block : MonoBehaviour
         if (IsLocked != value)
         {
             IsLocked = value;
-            colorRenderer.material.color =
-                value ? LevelSettings.LockedBlockColor : LevelSettings.BlockColors[ColorId];
             rb.isKinematic = value;
+
+            UpdateColor();
         }
     }
 
@@ -83,6 +86,32 @@ public class Block : MonoBehaviour
 
         NotifyFallFromLevel();
         Destroy(gameObject);
+    }
+
+    private void UpdateColor()
+    {
+        Material material;
+        if (IsLocked)
+        {
+            material = cachedLockedMaterial;
+            if (material == null)
+            {
+                material = new Material(colorRenderer.sharedMaterial);
+                material.color = LevelSettings.LockedBlockColor;
+                cachedLockedMaterial = material;
+            }
+        }
+        else
+        {
+            material = cachedColorMaterials[ColorId];
+            if (material == null)
+            {
+                material = new Material(colorRenderer.sharedMaterial);
+                material.color = LevelSettings.BlockColors[ColorId];
+                cachedColorMaterials[ColorId] = material;
+            }
+        }
+        colorRenderer.sharedMaterial = material;
     }
 
     private void NotifyFallFromLevel()

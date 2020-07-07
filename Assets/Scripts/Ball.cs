@@ -2,6 +2,8 @@
 
 public class Ball : MonoBehaviour
 {
+    private static Material[] cachedColorMaterials = new Material[LevelSettings.BlockColors.Length];
+
     public Renderer colorRenderer;
 
     public int ColorId { get; private set; }
@@ -9,6 +11,19 @@ public class Ball : MonoBehaviour
     public void Setup(int colorId)
     {
         ColorId = colorId;
-        colorRenderer.material.color = LevelSettings.BlockColors[colorId];
+
+        UpdateColor();
+    }
+
+    private void UpdateColor()
+    {
+        Material material = cachedColorMaterials[ColorId];
+        if (material == null)
+        {
+            material = new Material(colorRenderer.sharedMaterial);
+            material.color = LevelSettings.BlockColors[ColorId];
+            cachedColorMaterials[ColorId] = material;
+        }
+        colorRenderer.sharedMaterial = material;
     }
 }
