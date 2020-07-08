@@ -11,12 +11,14 @@ public class LevelSettings : ScriptableObject
     public const int DefaultAvailableBalls = 26;
 
     public readonly static Color[] BlockColors = {
-        new Color(0, 0.5f, 0.75f),
-        new Color(1, 0.75f, 0.125f),
-        new Color(0.25f, 0.75f, 0),
-        new Color(0.75f, 0.125f, 0),
+        new Color32(115, 180, 255, 255),
+        new Color32(255, 215, 40, 255),
+        new Color32(255, 113, 113, 255),
+        new Color32(150, 100, 240, 255),
+        new Color32(255, 115, 255, 255),
+        new Color32(100, 255, 190, 255),
     };
-    public readonly static Color LockedBlockColor = new Color(0.25f, 0.25f, 0.25f);
+    public readonly static Color LockedBlockColor = new Color32(60, 60, 60, 255);
 
     public int towerLevels;
     public int towerUnlockedLevels;
