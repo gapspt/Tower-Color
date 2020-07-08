@@ -124,6 +124,9 @@ public class Level : MonoBehaviour
         }
 
         SetupBall();
+
+        UIManager.Current?.UpdateAvailableBalls(availableBalls);
+        UIManager.Current?.SetHudVisible(true);
     }
 
     private void ChooseRandomBlockColors(int blockColorsNumber)
@@ -165,10 +168,12 @@ public class Level : MonoBehaviour
         if (availableBalls > 0)
         {
             SetupBall();
+            UIManager.Current?.UpdateAvailableBalls(availableBalls);
         }
         else
         {
             currentBall = null;
+            UIManager.Current?.SetHudVisible(false);
         }
 
         float gravity = Physics.gravity.y * throwGravityMultiplier;
