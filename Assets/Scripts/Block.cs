@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 public class Block : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Block : MonoBehaviour
 
     public float explosionRadius = 1;
     public float explosionForce = 500;
+    public float explosionPropagationDelay = 0.1f;
 
     private Rigidbody rb;
     private ParticleSystemRenderer explosionParticlesRenderer;
@@ -72,13 +74,17 @@ public class Block : MonoBehaviour
         Destroy(blockCollider);
         Destroy(colorRenderer);
         explosionParticles.Play();
+        NotifyFallFromLevel();
 
         Vector3 center = rb.worldCenterOfMass;
-
         Collider[] objects = Physics.OverlapSphere(center, explosionRadius);
-        foreach (Collider collider in objects)
+        Block[] nearbyBlocks = objects
+            .Select((collider) => collider.GetComponentInParent<Block>())
+            .ToArray();
+
+        await TaskUtils.WaitForSeconds(this, explosionPropagationDelay);
+        foreach (Block otherBlock in nearbyBlocks)
         {
-            Block otherBlock = collider.GetComponentInParent<Block>();
             if (otherBlock != null && !otherBlock.IsExploding)
             {
                 if (otherBlock.ColorId == ColorId)
@@ -87,15 +93,16 @@ public class Block : MonoBehaviour
                 }
                 else
                 {
-                    collider.attachedRigidbody?.AddExplosionForce(explosionForce, center, explosionRadius);
+                    otherBlock.rb?.AddExplosionForce(explosionForce, center, explosionRadius);
                 }
             }
         }
 
-        NotifyFallFromLevel();
-
         float particlesDuration = explosionParticles.main.duration + explosionParticles.main.startLifetime.constant;
-        await TaskUtils.WaitForSeconds(this, particlesDuration);
+        if (particlesDuration > explosionPropagationDelay)
+        {
+            await TaskUtils.WaitForSeconds(this, particlesDuration - explosionPropagationDelay);
+        }
         Destroy(gameObject);
     }
 

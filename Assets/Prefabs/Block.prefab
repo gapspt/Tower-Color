@@ -67,6 +67,7 @@ MonoBehaviour:
   explosionParticles: {fileID: 307518959541788155}
   explosionRadius: 1
   explosionForce: 500
+  explosionPropagationDelay: 0.05
 --- !u!1 &7856567315998614931
 GameObject:
   m_ObjectHideFlags: 0
