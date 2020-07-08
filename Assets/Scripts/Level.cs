@@ -31,7 +31,7 @@ public class Level : MonoBehaviour
         Current = this;
     }
 
-    private async void Start()
+    private void Start()
     {
         if (cameraController == null)
         {
@@ -40,20 +40,11 @@ public class Level : MonoBehaviour
 
         SetupLevel();
 
-        int levels = settings.towerLevels;
-        int unlockedLevels = settings.towerUnlockedLevels;
-
         Vector3 lookAtPosition = (tower.GetLevelLocalPosition(0) +
-            tower.GetLevelLocalPosition(unlockedLevels)) / 2;
+            tower.GetLevelLocalPosition(settings.towerUnlockedLevels)) / 2;
         cameraController.SetLookAtPosition(lookAtPosition);
 
-        // TODO: Wait for the player to press the start button
-        await TaskUtils.WaitForSecondsRealtime(this, 1);
-        lookAtPosition = (tower.GetLevelLocalPosition(levels) +
-            tower.GetLevelLocalPosition(levels - unlockedLevels)) / 2;
-        await cameraController.MoveAtLevelStart(lookAtPosition);
-
-        StartLevel();
+        UIManager.Current?.SetStartScreenVisible(true);
     }
 
     public void OnClick(Vector2 point)
@@ -116,8 +107,16 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void StartLevel()
+    public async void StartLevel()
     {
+        UIManager.Current?.HideAll();
+
+        int levels = settings.towerLevels;
+        int unlockedLevels = settings.towerUnlockedLevels;
+        Vector3 lookAtPosition = (tower.GetLevelLocalPosition(levels) +
+             tower.GetLevelLocalPosition(levels - unlockedLevels)) / 2;
+        await cameraController.MoveAtLevelStart(lookAtPosition);
+
         lockedLevels = settings.towerLevels - settings.towerUnlockedLevels;
         for (int i = lockedLevels - 1; i >= 0; i--)
         {
