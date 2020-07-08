@@ -5,12 +5,15 @@ public class Block : MonoBehaviour
     private static Material[] cachedColorMaterials = new Material[LevelSettings.BlockColors.Length];
     private static Material cachedLockedMaterial;
 
+    public Collider blockCollider;
     public Renderer colorRenderer;
+    public ParticleSystem explosionParticles;
 
     public float explosionRadius = 1;
     public float explosionForce = 500;
 
     private Rigidbody rb;
+    private ParticleSystemRenderer explosionParticlesRenderer;
 
     private bool standing = true;
 
@@ -23,6 +26,7 @@ public class Block : MonoBehaviour
     private void Awake()
     {
         rb = GetComponentInChildren<Rigidbody>();
+        explosionParticlesRenderer = explosionParticles.GetComponent<ParticleSystemRenderer>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -57,13 +61,17 @@ public class Block : MonoBehaviour
         }
     }
 
-    public void Explode()
+    public async void Explode()
     {
         if (IsLocked || IsExploding)
         {
             return;
         }
         IsExploding = true;
+
+        Destroy(blockCollider);
+        Destroy(colorRenderer);
+        explosionParticles.Play();
 
         Vector3 center = rb.worldCenterOfMass;
 
@@ -85,6 +93,9 @@ public class Block : MonoBehaviour
         }
 
         NotifyFallFromLevel();
+
+        float particlesDuration = explosionParticles.main.duration + explosionParticles.main.startLifetime.constant;
+        await TaskUtils.WaitForSeconds(this, particlesDuration);
         Destroy(gameObject);
     }
 
@@ -112,6 +123,7 @@ public class Block : MonoBehaviour
             }
         }
         colorRenderer.sharedMaterial = material;
+        explosionParticlesRenderer.sharedMaterial = material;
     }
 
     private void NotifyFallFromLevel()
