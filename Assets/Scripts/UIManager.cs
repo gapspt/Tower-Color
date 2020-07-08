@@ -8,9 +8,12 @@ public class UIManager : MonoBehaviour
 
     public GameObject hud;
     public GameObject startScreen;
+    public GameObject endScreen;
 
     public TMP_Text availableBallsText;
     public Button startButton;
+    public GameObject levelWonText;
+    public GameObject levelLostText;
 
     private void Awake()
     {
@@ -34,14 +37,26 @@ public class UIManager : MonoBehaviour
         startScreen.SetActive(visible);
     }
 
+    public void SetEndScreenVisible(bool visible)
+    {
+        endScreen.SetActive(visible);
+    }
+
     public void HideAll()
     {
         SetHudVisible(false);
         SetStartScreenVisible(false);
+        SetEndScreenVisible(false);
     }
 
     public void UpdateAvailableBalls(int availableBalls)
     {
         availableBallsText.text = availableBalls.ToString();
+    }
+
+    public void UpdateLevelWon(bool won)
+    {
+        levelWonText.SetActive(won);
+        levelLostText.SetActive(!won);
     }
 }

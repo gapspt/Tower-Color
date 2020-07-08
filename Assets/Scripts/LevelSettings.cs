@@ -9,6 +9,8 @@ public class LevelSettings : ScriptableObject
     public const int DefaultBlocksPerTowerLevel = 15;
     public const int DefaultBlockColorsNumber = 4;
     public const int DefaultAvailableBalls = 26;
+    public const int DefaultWinMaxStandingBlocks = 30;
+    public const float DefaultLoseDelay = 3;
 
     public readonly static Color[] BlockColors = {
         new Color32(115, 180, 255, 255),
@@ -25,9 +27,12 @@ public class LevelSettings : ScriptableObject
     public int blocksPerTowerLevel;
     public int blockColorsNumber;
     public int availableBalls;
+    public int winMaxStandingBlocks;
+    public float loseDelay;
 
     public static LevelSettings CreateInstance(int towerLevels, int towerUnlockedLevels,
-        int blocksPerTowerLevel, int blockColorsNumber, int availableBalls)
+        int blocksPerTowerLevel, int blockColorsNumber, int availableBalls,
+        int winMaxStandingBlocks, float loseDelay)
     {
         LevelSettings result = CreateInstance<LevelSettings>();
         result.towerLevels = towerLevels;
@@ -35,10 +40,13 @@ public class LevelSettings : ScriptableObject
         result.blocksPerTowerLevel = blocksPerTowerLevel;
         result.blockColorsNumber = blockColorsNumber;
         result.availableBalls = availableBalls;
+        result.winMaxStandingBlocks = winMaxStandingBlocks;
+        result.loseDelay = loseDelay;
         return result;
     }
 
     public static LevelSettings CreateDefaultInstance() => CreateInstance(
         DefaultTowerLevels, DefaultTowerUnlockedLevels, DefaultBlocksPerTowerLevel,
-        DefaultBlockColorsNumber, DefaultAvailableBalls);
+        DefaultBlockColorsNumber, DefaultAvailableBalls,
+        DefaultWinMaxStandingBlocks, DefaultLoseDelay);
 }

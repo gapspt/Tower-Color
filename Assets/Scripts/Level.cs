@@ -18,8 +18,11 @@ public class Level : MonoBehaviour
     private int towerBlocksLayerMask;
 
     private Ball currentBall;
+    private bool levelRunning = false;
+    private bool levelWon;
     private int availableBalls;
     private int lockedLevels;
+    private int standingBlocks;
     private int[] standingBlocksPerLevel;
 
     public static Level Current { get; private set; }
@@ -72,6 +75,18 @@ public class Level : MonoBehaviour
 
     public void OnBlockFell(Block block)
     {
+        if (!levelRunning)
+        {
+            return;
+        }
+
+        standingBlocks--;
+        if (standingBlocks == settings.winMaxStandingBlocks)
+        {
+            FinishGame(true);
+            return;
+        }
+
         int levelStandingBlocks = --standingBlocksPerLevel[block.TowerLevel];
         if (lockedLevels > 0 && levelStandingBlocks == 0)
         {
@@ -99,7 +114,9 @@ public class Level : MonoBehaviour
         tower.blocksPerLevel = blocksPerTowerLevel;
         tower.blockColorIds = blockColorIds;
 
+        levelWon = false;
         availableBalls = settings.availableBalls;
+        standingBlocks = towerLevels * blocksPerTowerLevel;
         standingBlocksPerLevel = new int[towerLevels];
         for (int i = towerLevels - 1; i >= 0; i--)
         {
@@ -127,6 +144,8 @@ public class Level : MonoBehaviour
 
         UIManager.Current?.UpdateAvailableBalls(availableBalls);
         UIManager.Current?.SetHudVisible(true);
+
+        levelRunning = true;
     }
 
     private void ChooseRandomBlockColors(int blockColorsNumber)
@@ -165,7 +184,8 @@ public class Level : MonoBehaviour
         Ball ball = currentBall;
 
         availableBalls--;
-        if (availableBalls > 0)
+        bool lastBall = availableBalls == 0;
+        if (!lastBall)
         {
             SetupBall();
             UIManager.Current?.UpdateAvailableBalls(availableBalls);
@@ -205,5 +225,31 @@ public class Level : MonoBehaviour
             block.Explode();
         }
         Destroy(ball.gameObject);
+
+
+        if (lastBall)
+        {
+            // TODO: Show a timer in the UI
+            await TaskUtils.WaitForSeconds(this, settings.loseDelay);
+
+            if (!levelWon)
+            {
+                FinishGame(false);
+            }
+        }
+    }
+
+    private void FinishGame(bool won)
+    {
+        levelRunning = false;
+        levelWon = won;
+        if (currentBall != null)
+        {
+            Destroy(currentBall.gameObject);
+            currentBall = null;
+        }
+        UIManager.Current?.SetHudVisible(false);
+        UIManager.Current?.UpdateLevelWon(won);
+        UIManager.Current?.SetEndScreenVisible(true);
     }
 }
