@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,6 +92,13 @@ public class UIManager : MonoBehaviour
     public void UpdateAvailableBalls(int availableBalls)
     {
         availableBallsText.text = availableBalls.ToString();
+    }
+
+    public void UpdateAvailablePowers(IDictionary<Power, int> availablePowers)
+    {
+        availablePowers.TryGetValue(Power.Rainbow, out int rainbowPowers);
+        rainbowPowerCounterText.text = rainbowPowers.ToString();
+        rainbowPowerButton.interactable = rainbowPowers != 0;
     }
 
     public void UpdateLevelWon(bool won)

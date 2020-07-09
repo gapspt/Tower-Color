@@ -1,7 +1,17 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class LevelSettings : ScriptableObject
 {
+    [Serializable]
+    public struct PowerCount
+    {
+        public Power power;
+        public int count;
+    }
+
     public const int WaterLayer = 4;
     public const int TowerBlocksLayer = 8;
 
@@ -12,6 +22,9 @@ public class LevelSettings : ScriptableObject
     public const int DefaultAvailableBalls = 26;
     public const int DefaultWinMaxStandingBlocks = 30;
     public const float DefaultLoseDelay = 3;
+    public readonly static IDictionary<Power, int> DefaultAvailablePowers = new Dictionary<Power, int> {
+        { Power.Rainbow, 3 },
+    };
 
     public readonly static Color[] BlockColors = {
         new Color32(115, 180, 255, 255),
@@ -30,10 +43,11 @@ public class LevelSettings : ScriptableObject
     public int availableBalls;
     public int winMaxStandingBlocks;
     public float loseDelay;
+    public PowerCount[] availablePowers;
 
     public static LevelSettings CreateInstance(int towerLevels, int towerUnlockedLevels,
         int blocksPerTowerLevel, int blockColorsNumber, int availableBalls,
-        int winMaxStandingBlocks, float loseDelay)
+        int winMaxStandingBlocks, float loseDelay, IDictionary<Power, int> availablePowers)
     {
         LevelSettings result = CreateInstance<LevelSettings>();
         result.towerLevels = towerLevels;
@@ -43,11 +57,14 @@ public class LevelSettings : ScriptableObject
         result.availableBalls = availableBalls;
         result.winMaxStandingBlocks = winMaxStandingBlocks;
         result.loseDelay = loseDelay;
+        result.availablePowers = availablePowers
+            .Select(entry => new PowerCount { power = entry.Key, count = entry.Value })
+            .ToArray();
         return result;
     }
 
     public static LevelSettings CreateDefaultInstance() => CreateInstance(
         DefaultTowerLevels, DefaultTowerUnlockedLevels, DefaultBlocksPerTowerLevel,
         DefaultBlockColorsNumber, DefaultAvailableBalls,
-        DefaultWinMaxStandingBlocks, DefaultLoseDelay);
+        DefaultWinMaxStandingBlocks, DefaultLoseDelay, DefaultAvailablePowers);
 }

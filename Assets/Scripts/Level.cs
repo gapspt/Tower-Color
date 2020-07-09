@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Level : MonoBehaviour
 {
@@ -25,6 +27,7 @@ public class Level : MonoBehaviour
     private int winRequiredBlocks;
     private int winRemainingBlocks;
     private int[] standingBlocksPerLevel;
+    private IDictionary<Power, int> availablePowers;
 
     public static Level Current { get; private set; }
 
@@ -120,6 +123,8 @@ public class Level : MonoBehaviour
         {
             standingBlocksPerLevel[i] = blocksPerTowerLevel;
         }
+        availablePowers = settings.availablePowers
+            .ToDictionary(entry => entry.power, entry => entry.count);
 
         Vector3 lookAtPosition = (tower.GetLevelLocalPosition(0) +
             tower.GetLevelLocalPosition(settings.towerUnlockedLevels)) / 2;
@@ -148,6 +153,7 @@ public class Level : MonoBehaviour
         SetupBall();
 
         UIManager.Current?.UpdateAvailableBalls(availableBalls);
+        UIManager.Current?.UpdateAvailablePowers(availablePowers);
         UIManager.Current?.SetHudVisible(true);
         UIManager.Current?.UpdateLevelProgress(0);
         UIManager.Current?.SetLevelProgressVisible(true);
@@ -157,7 +163,13 @@ public class Level : MonoBehaviour
 
     public void ActivatePower(Power power)
     {
-        currentBall?.SetPower(power);
+        availablePowers.TryGetValue(Power.Rainbow, out int count);
+        if (count > 0)
+        {
+            availablePowers[power] = --count;
+            currentBall?.SetPower(power);
+            UIManager.Current?.UpdateAvailablePowers(availablePowers);
+        }
     }
 
     private void ChooseRandomBlockColors(int blockColorsNumber)
