@@ -107,12 +107,14 @@ public class Level : MonoBehaviour
         int towerLevels = settings.towerLevels;
         int blocksPerTowerLevel = settings.blocksPerTowerLevel;
 
+        Random.InitState(SavedData.GamesWon);
         ChooseRandomBlockColors(settings.blockColorsNumber);
 
         tower = Instantiate(towerPrefab, transform).GetComponentInChildren<Tower>();
         tower.levels = towerLevels;
         tower.blocksPerLevel = blocksPerTowerLevel;
         tower.blockColorIds = blockColorIds;
+        tower.Setup();
 
         levelWon = false;
         availableBalls = settings.availableBalls;
@@ -201,6 +203,7 @@ public class Level : MonoBehaviour
         GameObject ballObject = Instantiate(ballPrefab, cameraController.gameCamera.transform);
         ballObject.transform.localPosition = throwCameraPositionOffset;
         currentBall = ballObject.GetComponentInChildren<Ball>();
+        Random.InitState(SavedData.GamesWon + 13 * availableBalls);
         currentBall.Setup(blockColorIds[Random.Range(0, blockColorIds.Length)]);
     }
 

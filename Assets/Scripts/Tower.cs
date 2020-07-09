@@ -14,6 +14,16 @@ public class Tower : MonoBehaviour
 
     private void Start()
     {
+        Setup();
+    }
+
+    public void Setup()
+    {
+        if (blocks != null)
+        {
+            return;
+        }
+
         int blockColorsLength = blockColorIds.Length;
 
         float blockPlacementRadius = CalcBlockPlacementRadius(blocksPerLevel);
