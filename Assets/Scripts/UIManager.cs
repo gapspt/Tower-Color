@@ -11,6 +11,8 @@ public class UIManager : MonoBehaviour
     public GameObject endScreen;
 
     public TMP_Text availableBallsText;
+    public Slider levelProgressSlider;
+    public TMP_Text levelProgressText;
     public Button startButton;
     public Button nextLevelButton;
     public Button retryLevelButton;
@@ -46,6 +48,11 @@ public class UIManager : MonoBehaviour
         hud.gameObject.SetActive(visible);
     }
 
+    public void SetLevelProgressVisible(bool visible)
+    {
+        levelProgressSlider.gameObject.SetActive(visible);
+    }
+
     public void SetStartScreenVisible(bool visible)
     {
         startScreen.SetActive(visible);
@@ -59,8 +66,15 @@ public class UIManager : MonoBehaviour
     public void HideAll()
     {
         SetHudVisible(false);
+        SetLevelProgressVisible(false);
         SetStartScreenVisible(false);
         SetEndScreenVisible(false);
+    }
+
+    public void UpdateLevelProgress(float progress)
+    {
+        levelProgressSlider.value = progress;
+        levelProgressText.text = $"{Mathf.FloorToInt(progress * 100)}%";
     }
 
     public void UpdateAvailableBalls(int availableBalls)

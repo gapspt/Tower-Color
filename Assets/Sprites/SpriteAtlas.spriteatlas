@@ -31,12 +31,14 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: a3a20968368ea7040ae05e7af6555e85, type: 3}
-    totalSpriteSurfaceArea: 65536
+    totalSpriteSurfaceArea: 69632
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 385cbaa6bf4f6e4418607fd466d7ef3f, type: 3}
   - {fileID: 21300000, guid: 4914be2b4323b784188d7c626df66507, type: 3}
   m_PackedSpriteNamesToIndex:
+  - slider-frame
   - button-round
   m_Tag: SpriteAtlas
   m_IsVariant: 0

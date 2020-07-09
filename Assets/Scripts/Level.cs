@@ -22,7 +22,8 @@ public class Level : MonoBehaviour
     private bool levelWon;
     private int availableBalls;
     private int lockedLevels;
-    private int standingBlocks;
+    private int winRequiredBlocks;
+    private int winRemainingBlocks;
     private int[] standingBlocksPerLevel;
 
     public static Level Current { get; private set; }
@@ -74,8 +75,10 @@ public class Level : MonoBehaviour
             return;
         }
 
-        standingBlocks--;
-        if (standingBlocks == settings.winMaxStandingBlocks)
+        winRemainingBlocks--;
+        UIManager.Current?.UpdateLevelProgress((winRequiredBlocks - winRemainingBlocks) / (float)winRequiredBlocks);
+
+        if (winRemainingBlocks == 0)
         {
             FinishGame(true);
             return;
@@ -110,7 +113,8 @@ public class Level : MonoBehaviour
 
         levelWon = false;
         availableBalls = settings.availableBalls;
-        standingBlocks = towerLevels * blocksPerTowerLevel;
+        winRequiredBlocks = towerLevels * blocksPerTowerLevel - settings.winMaxStandingBlocks;
+        winRemainingBlocks = winRequiredBlocks;
         standingBlocksPerLevel = new int[towerLevels];
         for (int i = towerLevels - 1; i >= 0; i--)
         {
@@ -145,6 +149,8 @@ public class Level : MonoBehaviour
 
         UIManager.Current?.UpdateAvailableBalls(availableBalls);
         UIManager.Current?.SetHudVisible(true);
+        UIManager.Current?.UpdateLevelProgress(0);
+        UIManager.Current?.SetLevelProgressVisible(true);
 
         levelRunning = true;
     }
