@@ -9,10 +9,14 @@ public class Block : MonoBehaviour
     public Collider blockCollider;
     public Renderer colorRenderer;
     public ParticleSystem explosionParticles;
+    public FloatingBehaviour floatingBehaviour;
 
     public float explosionRadius = 1;
     public float explosionForce = 500;
     public float explosionPropagationDelay = 0.1f;
+
+    public float floatingDrag = 0.5f;
+    public float floatingAngularDrag = 2f;
 
     private Rigidbody rb;
     private ParticleSystemRenderer explosionParticlesRenderer;
@@ -38,7 +42,17 @@ public class Block : MonoBehaviour
             return;
         }
 
-        if (other.GetComponentInParent<TowerLevelCollider>()?.TowerLevel < TowerLevel)
+        if (other.gameObject.layer == LevelSettings.WaterLayer)
+        {
+            rb.constraints = RigidbodyConstraints.FreezePositionY;
+            rb.drag = floatingDrag;
+            rb.angularDrag = floatingAngularDrag;
+            floatingBehaviour.neutralY = other.bounds.max.y;
+            floatingBehaviour.enabled = true;
+
+            NotifyFallFromLevel();
+        }
+        else if (other.GetComponentInParent<TowerLevelCollider>()?.TowerLevel < TowerLevel)
         {
             NotifyFallFromLevel();
         }

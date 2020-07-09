@@ -2,6 +2,7 @@
 
 public class LevelSettings : ScriptableObject
 {
+    public const int WaterLayer = 4;
     public const int TowerBlocksLayer = 8;
 
     public const int DefaultTowerLevels = 20;

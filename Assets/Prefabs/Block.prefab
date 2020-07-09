@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5696285348123395339}
   - component: {fileID: 6677594602614922049}
   - component: {fileID: 7852074598228928213}
+  - component: {fileID: 5498854072867178632}
   m_Layer: 8
   m_Name: Block
   m_TagString: Untagged
@@ -65,9 +66,30 @@ MonoBehaviour:
   blockCollider: {fileID: 2282954980076220113}
   colorRenderer: {fileID: 7293969916373275999}
   explosionParticles: {fileID: 307518959541788155}
+  floatingBehaviour: {fileID: 5498854072867178632}
   explosionRadius: 1
   explosionForce: 500
   explosionPropagationDelay: 0.05
+  floatingDrag: 0.5
+  floatingAngularDrag: 2
+--- !u!114 &5498854072867178632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5696285348123395343}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f928ebf8d61465444b120b2b1cf0cbcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeCollider: {fileID: 2282954980076220113}
+  neutralY: 0.25
+  minWaveHeight: 0.1
+  maxWaveHeight: 0.15
+  minWaveDuration: 1
+  maxWaveDuration: 1.5
 --- !u!1 &7856567315998614931
 GameObject:
   m_ObjectHideFlags: 0
