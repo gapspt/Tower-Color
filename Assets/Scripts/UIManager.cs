@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public GameObject startScreen;
     public GameObject endScreen;
 
+    public TMP_Text currentLevelText;
     public TMP_Text availableBallsText;
     public Image lastBallTimerFillImage;
     public Slider levelProgressSlider;
@@ -89,6 +90,11 @@ public class UIManager : MonoBehaviour
         SetLastBallTimerVisible(false);
         SetStartScreenVisible(false);
         SetEndScreenVisible(false);
+    }
+
+    public void UpdateLevelNumber(int level)
+    {
+        currentLevelText.text = $"LEVEL {level}";
     }
 
     public void UpdateLevelProgress(float progress)

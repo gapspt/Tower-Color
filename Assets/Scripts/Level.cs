@@ -131,6 +131,7 @@ public class Level : MonoBehaviour
         cameraController.SetLookAtPosition(lookAtPosition);
 
         UIManager.Current?.HideAll();
+        UIManager.Current?.UpdateLevelNumber(SavedData.GamesWon + 1);
         UIManager.Current?.SetStartScreenVisible(true);
     }
 
@@ -280,6 +281,10 @@ public class Level : MonoBehaviour
     {
         levelRunning = false;
         levelWon = won;
+        if (won)
+        {
+            SavedData.GamesWon++;
+        }
         if (currentBall != null)
         {
             Destroy(currentBall.gameObject);
