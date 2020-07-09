@@ -41,13 +41,7 @@ public class Level : MonoBehaviour
             cameraController = FindObjectOfType<CameraController>();
         }
 
-        SetupLevel();
-
-        Vector3 lookAtPosition = (tower.GetLevelLocalPosition(0) +
-            tower.GetLevelLocalPosition(settings.towerUnlockedLevels)) / 2;
-        cameraController.SetLookAtPosition(lookAtPosition);
-
-        UIManager.Current?.SetStartScreenVisible(true);
+        LoadLevel();
     }
 
     public void OnClick(Vector2 point)
@@ -97,11 +91,11 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void SetupLevel()
+    public void LoadLevel()
     {
         if (tower != null)
         {
-            Destroy(tower);
+            Destroy(tower.gameObject);
         }
 
         int towerLevels = settings.towerLevels;
@@ -122,6 +116,13 @@ public class Level : MonoBehaviour
         {
             standingBlocksPerLevel[i] = blocksPerTowerLevel;
         }
+
+        Vector3 lookAtPosition = (tower.GetLevelLocalPosition(0) +
+            tower.GetLevelLocalPosition(settings.towerUnlockedLevels)) / 2;
+        cameraController.SetLookAtPosition(lookAtPosition);
+
+        UIManager.Current?.HideAll();
+        UIManager.Current?.SetStartScreenVisible(true);
     }
 
     public async void StartLevel()

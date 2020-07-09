@@ -12,19 +12,33 @@ public class UIManager : MonoBehaviour
 
     public TMP_Text availableBallsText;
     public Button startButton;
-    public GameObject levelWonText;
-    public GameObject levelLostText;
+    public Button nextLevelButton;
+    public Button retryLevelButton;
+    public GameObject levelWonPanel;
+    public GameObject levelLostPanel;
 
     private void Awake()
     {
         Current = this;
 
         startButton.onClick.AddListener(OnStartButtonPressed);
+        nextLevelButton.onClick.AddListener(OnNextLeveButtonPressed);
+        retryLevelButton.onClick.AddListener(OnRetryLeveButtonPressed);
     }
 
     public void OnStartButtonPressed()
     {
         Level.Current?.StartLevel();
+    }
+
+    public void OnNextLeveButtonPressed()
+    {
+        Level.Current?.LoadLevel();
+    }
+
+    public void OnRetryLeveButtonPressed()
+    {
+        Level.Current?.LoadLevel();
     }
 
     public void SetHudVisible(bool visible)
@@ -56,7 +70,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdateLevelWon(bool won)
     {
-        levelWonText.SetActive(won);
-        levelLostText.SetActive(!won);
+        levelWonPanel.SetActive(won);
+        levelLostPanel.SetActive(!won);
     }
 }
