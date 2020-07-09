@@ -253,8 +253,21 @@ public class Level : MonoBehaviour
 
         if (lastBall)
         {
-            // TODO: Show a timer in the UI
-            await TaskUtils.WaitForSeconds(this, settings.loseDelay);
+            UIManager.Current?.UpdateLastBallTimer(1);
+            UIManager.Current?.SetLastBallTimerVisible(true);
+
+            float loseDelay = settings.loseDelay;
+            float loseTime = Time.time + loseDelay;
+
+            await TaskUtils.WaitForNextUpdate(this);
+            for (float time = Time.time; time < loseTime && !levelWon; time = Time.time)
+            {
+                UIManager.Current?.UpdateLastBallTimer((loseTime - time) / loseDelay);
+                await TaskUtils.WaitForNextUpdate(this);
+            }
+
+            UIManager.Current?.UpdateLastBallTimer(0);
+            UIManager.Current?.SetLastBallTimerVisible(false);
 
             if (!levelWon)
             {

@@ -8,10 +8,12 @@ public class UIManager : MonoBehaviour
     public static UIManager Current { get; private set; }
 
     public GameObject hud;
+    public GameObject lastBallTimer;
     public GameObject startScreen;
     public GameObject endScreen;
 
     public TMP_Text availableBallsText;
+    public Image lastBallTimerFillImage;
     public Slider levelProgressSlider;
     public TMP_Text levelProgressText;
     public Button startButton;
@@ -57,12 +59,17 @@ public class UIManager : MonoBehaviour
 
     public void SetHudVisible(bool visible)
     {
-        hud.gameObject.SetActive(visible);
+        hud.SetActive(visible);
     }
 
     public void SetLevelProgressVisible(bool visible)
     {
         levelProgressSlider.gameObject.SetActive(visible);
+    }
+
+    public void SetLastBallTimerVisible(bool visible)
+    {
+        lastBallTimer.SetActive(visible);
     }
 
     public void SetStartScreenVisible(bool visible)
@@ -79,6 +86,7 @@ public class UIManager : MonoBehaviour
     {
         SetHudVisible(false);
         SetLevelProgressVisible(false);
+        SetLastBallTimerVisible(false);
         SetStartScreenVisible(false);
         SetEndScreenVisible(false);
     }
@@ -99,6 +107,11 @@ public class UIManager : MonoBehaviour
         availablePowers.TryGetValue(Power.Rainbow, out int rainbowPowers);
         rainbowPowerCounterText.text = rainbowPowers.ToString();
         rainbowPowerButton.interactable = rainbowPowers != 0;
+    }
+
+    public void UpdateLastBallTimer(float remainingTime)
+    {
+        lastBallTimerFillImage.fillAmount = remainingTime;
     }
 
     public void UpdateLevelWon(bool won)
