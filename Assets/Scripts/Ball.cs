@@ -6,7 +6,11 @@ public class Ball : MonoBehaviour
 
     public Renderer colorRenderer;
 
+    public Material rainbowMaterial;
+
     public int ColorId { get; private set; }
+
+    public Power power = Power.None;
 
     public void Setup(int colorId)
     {
@@ -15,15 +19,33 @@ public class Ball : MonoBehaviour
         UpdateColor();
     }
 
+    public void SetPower(Power power)
+    {
+        this.power = power;
+
+        UpdateColor();
+    }
+
     private void UpdateColor()
     {
-        Material material = cachedColorMaterials[ColorId];
-        if (material == null)
+        Material material;
+        switch (power)
         {
-            material = new Material(colorRenderer.sharedMaterial);
-            material.color = LevelSettings.BlockColors[ColorId];
-            cachedColorMaterials[ColorId] = material;
+            case Power.Rainbow:
+                material = rainbowMaterial;
+                break;
+            case Power.None:
+            default:
+                material = cachedColorMaterials[ColorId];
+                if (material == null)
+                {
+                    material = new Material(colorRenderer.sharedMaterial);
+                    material.color = LevelSettings.BlockColors[ColorId];
+                    cachedColorMaterials[ColorId] = material;
+                }
+                break;
         }
+
         colorRenderer.sharedMaterial = material;
     }
 }

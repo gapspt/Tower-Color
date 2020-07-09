@@ -93,3 +93,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colorRenderer: {fileID: 3808309080595534187}
+  rainbowMaterial: {fileID: 2100000, guid: b0276829f6220cf44b4ccffef1b7a0db, type: 2}
+  power: 0

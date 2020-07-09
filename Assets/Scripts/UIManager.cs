@@ -19,6 +19,10 @@ public class UIManager : MonoBehaviour
     public GameObject levelWonPanel;
     public GameObject levelLostPanel;
 
+    [Header("HUD power icons")]
+    public Button rainbowPowerButton;
+    public TMP_Text rainbowPowerCounterText;
+
     private void Awake()
     {
         Current = this;
@@ -26,6 +30,8 @@ public class UIManager : MonoBehaviour
         startButton.onClick.AddListener(OnStartButtonPressed);
         nextLevelButton.onClick.AddListener(OnNextLeveButtonPressed);
         retryLevelButton.onClick.AddListener(OnRetryLeveButtonPressed);
+
+        rainbowPowerButton.onClick.AddListener(OnRainbowPowerButtonPressed);
     }
 
     public void OnStartButtonPressed()
@@ -41,6 +47,11 @@ public class UIManager : MonoBehaviour
     public void OnRetryLeveButtonPressed()
     {
         Level.Current?.LoadLevel();
+    }
+
+    public void OnRainbowPowerButtonPressed()
+    {
+        Level.Current?.ActivatePower(Power.Rainbow);
     }
 
     public void SetHudVisible(bool visible)

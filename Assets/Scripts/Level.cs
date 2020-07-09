@@ -155,6 +155,11 @@ public class Level : MonoBehaviour
         levelRunning = true;
     }
 
+    public void ActivatePower(Power power)
+    {
+        currentBall?.SetPower(power);
+    }
+
     private void ChooseRandomBlockColors(int blockColorsNumber)
     {
         if (blockColorsNumber <= 0)
@@ -227,7 +232,7 @@ public class Level : MonoBehaviour
             await TaskUtils.WaitForNextUpdate(this);
         }
 
-        if (block.ColorId == ball.ColorId)
+        if (block.ColorId == ball.ColorId || ball.power == Power.Rainbow)
         {
             block.Explode();
         }
