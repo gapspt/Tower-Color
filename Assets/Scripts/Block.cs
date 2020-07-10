@@ -47,7 +47,6 @@ public class Block : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezePositionY;
             rb.drag = floatingDrag;
             rb.angularDrag = floatingAngularDrag;
-            floatingBehaviour.neutralY = other.bounds.max.y;
             floatingBehaviour.enabled = true;
 
             NotifyFallFromLevel();
