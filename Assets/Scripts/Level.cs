@@ -45,7 +45,7 @@ public class Level : MonoBehaviour
             cameraController = FindObjectOfType<CameraController>();
         }
 
-        LoadLevel();
+        LoadLevel(false);
     }
 
     public void OnClick(Vector2 point)
@@ -97,8 +97,14 @@ public class Level : MonoBehaviour
         }
     }
 
-    public void LoadLevel()
+    public async void LoadLevel(bool showTransitionOverlay = true)
     {
+        if (showTransitionOverlay)
+        {
+            await UIManager.Current?.SetTransitionOverlayVisible(true);
+        }
+        UIManager.Current?.HideAll();
+
         if (tower != null)
         {
             Destroy(tower.gameObject);
@@ -132,8 +138,11 @@ public class Level : MonoBehaviour
             tower.GetLevelLocalPosition(settings.towerUnlockedLevels)) / 2;
         cameraController.SetLookAtPosition(lookAtPosition);
 
-        UIManager.Current?.HideAll();
         UIManager.Current?.UpdateLevelNumber(SavedData.GamesWon + 1);
+        if (showTransitionOverlay)
+        {
+            await UIManager.Current?.SetTransitionOverlayVisible(false);
+        }
         UIManager.Current?.SetStartScreenVisible(true);
     }
 

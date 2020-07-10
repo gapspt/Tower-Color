@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private const float TransitionOverlayDuration = 0.2f;
+
     public static UIManager Current { get; private set; }
 
     public GameObject hud;
@@ -13,6 +15,7 @@ public class UIManager : MonoBehaviour
     public GameObject startScreen;
     public GameObject endScreen;
 
+    public Image transitionOverlayImage;
     public TMP_Text currentLevelText;
     public TMP_Text availableBallsText;
     public Image lastBallTimerFillImage;
@@ -57,6 +60,24 @@ public class UIManager : MonoBehaviour
     public void OnRainbowPowerButtonPressed()
     {
         Level.Current?.ActivatePower(Power.Rainbow);
+    }
+
+    public async Task SetTransitionOverlayVisible(bool visible, bool immediately = false)
+    {
+        if (immediately)
+        {
+            transitionOverlayImage.gameObject.SetActive(visible);
+        }
+        else if (visible)
+        {
+            transitionOverlayImage.gameObject.SetActive(true);
+            await UITransitions.FadeIn(transitionOverlayImage, TransitionOverlayDuration);
+        }
+        else if (transitionOverlayImage.gameObject.activeSelf)
+        {
+            await UITransitions.FadeOut(transitionOverlayImage, TransitionOverlayDuration);
+            transitionOverlayImage.gameObject.SetActive(false);
+        }
     }
 
     public async void SetHudVisible(bool visible, bool immediately = false)
