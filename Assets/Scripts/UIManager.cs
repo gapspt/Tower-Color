@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -58,38 +59,121 @@ public class UIManager : MonoBehaviour
         Level.Current?.ActivatePower(Power.Rainbow);
     }
 
-    public void SetHudVisible(bool visible)
+    public async void SetHudVisible(bool visible, bool immediately = false)
     {
-        hud.SetActive(visible);
+        if (immediately)
+        {
+            hud.SetActive(visible);
+        }
+        else if (visible)
+        {
+            hud.SetActive(true);
+            _ = UITransitions.FadeIn(availableBallsText);
+            _ = UITransitions.ScaleIn(rainbowPowerButton);
+        }
+        else if (hud.activeSelf)
+        {
+            Task t1 = UITransitions.FadeOut(availableBallsText);
+            Task t2 = UITransitions.ScaleOut(rainbowPowerButton);
+            await t1;
+            await t2;
+            hud.SetActive(false);
+        }
     }
 
-    public void SetLevelProgressVisible(bool visible)
+    public async void SetLevelProgressVisible(bool visible, bool immediately = false)
     {
-        levelProgressSlider.gameObject.SetActive(visible);
+        if (immediately)
+        {
+            levelProgressSlider.gameObject.SetActive(visible);
+        }
+        else if (visible)
+        {
+            levelProgressSlider.gameObject.SetActive(true);
+            _ = UITransitions.ScaleIn(levelProgressSlider);
+        }
+        else if (levelProgressSlider.gameObject.activeSelf)
+        {
+            await UITransitions.ScaleOut(levelProgressSlider);
+            levelProgressSlider.gameObject.SetActive(false);
+        }
     }
 
-    public void SetLastBallTimerVisible(bool visible)
+    public async void SetLastBallTimerVisible(bool visible, bool immediately = false)
     {
-        lastBallTimer.SetActive(visible);
+        if (immediately)
+        {
+            lastBallTimer.SetActive(visible);
+        }
+        else if (visible)
+        {
+            lastBallTimer.SetActive(true);
+            _ = UITransitions.ScaleIn(lastBallTimer.transform, this);
+        }
+        else if (lastBallTimer.activeSelf)
+        {
+            await UITransitions.ScaleOut(lastBallTimer.transform, this);
+            lastBallTimer.SetActive(false);
+        }
     }
 
-    public void SetStartScreenVisible(bool visible)
+    public async void SetStartScreenVisible(bool visible, bool immediately = false)
     {
-        startScreen.SetActive(visible);
+        if (immediately)
+        {
+            startScreen.SetActive(visible);
+        }
+        else if (visible)
+        {
+            startScreen.SetActive(true);
+            _ = UITransitions.ScaleIn(startButton);
+        }
+        else if (startScreen.activeSelf)
+        {
+            await UITransitions.ScaleOut(startButton);
+            startScreen.SetActive(false);
+        }
     }
 
-    public void SetEndScreenVisible(bool visible)
+    public async void SetEndScreenVisible(bool visible, bool immediately = false)
     {
-        endScreen.SetActive(visible);
+        if (immediately)
+        {
+            endScreen.SetActive(visible);
+        }
+        else if (visible)
+        {
+            endScreen.SetActive(true);
+            if (levelWonPanel.activeSelf)
+            {
+                _ = UITransitions.ScaleIn(nextLevelButton);
+            }
+            else if (levelLostPanel.activeSelf)
+            {
+                _ = UITransitions.ScaleIn(retryLevelButton);
+            }
+        }
+        else if (endScreen.activeSelf)
+        {
+            if (levelWonPanel.activeSelf)
+            {
+                await UITransitions.ScaleOut(nextLevelButton);
+            }
+            else if (levelLostPanel.activeSelf)
+            {
+                await UITransitions.ScaleOut(retryLevelButton);
+            }
+            endScreen.SetActive(false);
+        }
     }
 
     public void HideAll()
     {
-        SetHudVisible(false);
-        SetLevelProgressVisible(false);
-        SetLastBallTimerVisible(false);
-        SetStartScreenVisible(false);
-        SetEndScreenVisible(false);
+        SetHudVisible(false, true);
+        SetLevelProgressVisible(false, true);
+        SetLastBallTimerVisible(false, true);
+        SetStartScreenVisible(false, true);
+        SetEndScreenVisible(false, true);
     }
 
     public void UpdateLevelNumber(int level)

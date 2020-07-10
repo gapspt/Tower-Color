@@ -139,7 +139,7 @@ public class Level : MonoBehaviour
 
     public async void StartLevel()
     {
-        UIManager.Current?.HideAll();
+        UIManager.Current?.SetStartScreenVisible(false);
 
         int levels = settings.towerLevels;
         int unlockedLevels = settings.towerUnlockedLevels;
