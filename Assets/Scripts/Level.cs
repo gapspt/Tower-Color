@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
+    private const int BaseRandomSeed = 1000000;
+
     public LevelSettings settings;
 
     public CameraController cameraController;
@@ -16,6 +18,7 @@ public class Level : MonoBehaviour
     public Vector3 throwCameraPositionOffset;
 
     private int[] blockColorIds;
+    private int[] ballsColorIds;
     private Tower tower;
     private int towerBlocksLayerMask;
 
@@ -113,7 +116,10 @@ public class Level : MonoBehaviour
         int towerLevels = settings.towerLevels;
         int blocksPerTowerLevel = settings.blocksPerTowerLevel;
 
-        Random.InitState(SavedData.GamesWon);
+        // Initialize the level random state
+        Random.InitState(BaseRandomSeed + SavedData.GamesWon);
+        Random.Range(0f, 1f); // Ignore the first value
+
         ChooseRandomBlockColors(settings.blockColorsNumber);
 
         tower = Instantiate(towerPrefab, transform).GetComponentInChildren<Tower>();
@@ -122,8 +128,10 @@ public class Level : MonoBehaviour
         tower.blockColorIds = blockColorIds;
         tower.Setup();
 
-        levelWon = false;
         availableBalls = settings.availableBalls;
+        ChooseRandomBallColors(availableBalls);
+
+        levelWon = false;
         winRequiredBlocks = towerLevels * blocksPerTowerLevel - settings.winMaxStandingBlocks;
         winRemainingBlocks = winRequiredBlocks;
         standingBlocksPerLevel = new int[towerLevels];
@@ -176,21 +184,16 @@ public class Level : MonoBehaviour
     public void ActivatePower(Power power)
     {
         availablePowers.TryGetValue(Power.Rainbow, out int count);
-        if (count > 0)
+        if (count > 0 && currentBall != null)
         {
             availablePowers[power] = --count;
-            currentBall?.SetPower(power);
+            currentBall.SetPower(power);
             UIManager.Current?.UpdateAvailablePowers(availablePowers);
         }
     }
 
     private void ChooseRandomBlockColors(int blockColorsNumber)
     {
-        if (blockColorsNumber <= 0)
-        {
-            return;
-        }
-
         int availableColorsLength = LevelSettings.BlockColors.Length;
         int[] availableNumbers = new int[availableColorsLength];
         for (int i = 0; i < availableColorsLength; i++)
@@ -207,13 +210,31 @@ public class Level : MonoBehaviour
         }
     }
 
+    private void ChooseRandomBallColors(int availableBalls)
+    {
+        int colorsNumber = blockColorIds.Length;
+
+        ballsColorIds = new int[availableBalls];
+        for (int i = 0; i < availableBalls; i++)
+        {
+            ballsColorIds[i] = blockColorIds[i % colorsNumber];
+        }
+
+        for (int i = 0; i < availableBalls; i++)
+        {
+            int j = Random.Range(i, availableBalls);
+            int temp = ballsColorIds[i];
+            ballsColorIds[i] = ballsColorIds[j];
+            ballsColorIds[j] = temp;
+        }
+    }
+
     private void SetupBall()
     {
         GameObject ballObject = Instantiate(ballPrefab, cameraController.gameCamera.transform);
         ballObject.transform.localPosition = throwCameraPositionOffset;
         currentBall = ballObject.GetComponentInChildren<Ball>();
-        Random.InitState(SavedData.GamesWon + 13 * availableBalls);
-        currentBall.Setup(blockColorIds[Random.Range(0, blockColorIds.Length)]);
+        currentBall.Setup(ballsColorIds[availableBalls - 1]);
     }
 
     private async void ThrowBall(Block block, Vector3 hitPosition)
