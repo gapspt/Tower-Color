@@ -164,10 +164,11 @@ public class Level : MonoBehaviour
              tower.GetLevelLocalPosition(levels - unlockedLevels)) / 2;
         await cameraController.MoveAtLevelStart(lookAtPosition);
 
-        lockedLevels = settings.towerLevels - settings.towerUnlockedLevels;
-        for (int i = lockedLevels - 1; i >= 0; i--)
+        lockedLevels = levels - settings.towerUnlockedLevels;
+        for (int i = levels - 1; i >= 0; i--)
         {
-            tower.SetLevelLocked(i, true);
+            bool locked = i < lockedLevels;
+            tower.SetLevelLocked(i, locked);
         }
 
         SetupBall();

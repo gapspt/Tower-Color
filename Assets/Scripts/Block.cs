@@ -67,13 +67,10 @@ public class Block : MonoBehaviour
 
     public void SetLocked(bool value)
     {
-        if (IsLocked != value)
-        {
-            IsLocked = value;
-            rb.isKinematic = value;
+        IsLocked = value;
+        rb.isKinematic = value;
 
-            UpdateColor();
-        }
+        UpdateColor();
     }
 
     public async void Explode()
